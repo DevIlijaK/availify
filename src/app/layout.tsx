@@ -1,7 +1,15 @@
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import { ClerkProvider, SignedIn } from "@clerk/nextjs";
+import { db } from "~/server/db";
+import { images } from "~/server/db/schema";
+import { TopNav } from "./_components/topnav";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -9,12 +17,34 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const allImages = await db.select().from(images);
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      <body>{children}</body>
+      <ClerkProvider>
+        <NextSSRPlugin
+          /**
+           * The `extractRouterConfig` will extract **only** the route configs
+           * from the router to prevent additional information from being
+           * leaked to the client. The data passed to the client is the same
+           * as if you were to fetch `/api/uploadthing` directly.
+           */
+          routerConfig={extractRouterConfig(ourFileRouter)}
+        />
+        <html lang="en">
+          <body>
+            <TopNav />
+            <SignedIn>
+              {allImages.map((image) => (
+                <img key={image.id} src={image.url!} alt={"Image"} />
+              ))}
+            </SignedIn>
+            {children}
+          </body>
+        </html>
+      </ClerkProvider>
     </html>
   );
 }
