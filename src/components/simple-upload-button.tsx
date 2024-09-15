@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 import { toast } from "sonner";
 import { useUploadThing } from "~/utils/uploadthing";
 
@@ -78,8 +79,10 @@ export function LoadingBlocks() {
 
 export function SimpleUploadButton() {
   const router = useRouter();
+  const posthog = usePostHog();
   const { inputProps } = useUploadThingInputProps("imageUploader", {
     onUploadBegin() {
+      posthog.capture("upload_begin");
       toast(
         <div>
           <LoadingBlocks /> Loading
@@ -94,6 +97,11 @@ export function SimpleUploadButton() {
       toast.dismiss("upload-begin");
       toast("Upload completed!");
       router.refresh();
+    },
+    onUploadError(error) {
+      posthog.capture("upload_error", { error });
+      toast.dismiss("upload-begin");
+      toast.error("Uploading failed!");
     },
   });
   return (

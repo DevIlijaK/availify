@@ -1,4 +1,5 @@
-import { getMyImage } from "~/server/queries";
+import { deleteMyImage, getMyImage } from "~/server/queries";
+import { Button } from "./ui/button";
 
 export default async function FullpageImageView(input: { id: number }) {
   const { id } = input;
@@ -10,8 +11,17 @@ export default async function FullpageImageView(input: { id: number }) {
       </div>
       <div className="flex w-48 flex-col">
         <div className="text-xl font-bold">{image.name}</div>
-        <div></div>
-        <div></div>
+        <form
+          action={async () => {
+            "use server";
+            console.log("test");
+            await deleteMyImage({ id });
+          }}
+        >
+          <Button type="submit" variant="destructive">
+            Delete
+          </Button>
+        </form>
       </div>
     </div>
   );
