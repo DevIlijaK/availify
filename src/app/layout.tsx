@@ -4,12 +4,12 @@ import "@uploadthing/react/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { TopNav } from "./_components/topnav";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { Toaster } from "sonner";
 import { CSPostHogProvider } from "./_analitics/provider";
+import { SimpleNavManu } from "~/components/simple-nav-menu";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -20,7 +20,6 @@ export default async function RootLayout({
   children,
   modal,
 }: Readonly<{ children: React.ReactNode; modal: React.ReactNode }>) {
-  console.log(modal);
   return (
     <ClerkProvider>
       <CSPostHogProvider>
@@ -36,7 +35,8 @@ export default async function RootLayout({
           />
           <body>
             <div className="grid-rows-[auto, 1fr] grid h-screen">
-              <TopNav />
+              {/* <TopNav /> */}
+              <SimpleNavManu />
               <main className="overflow-y-scroll">{children}</main>
             </div>
             {modal}
