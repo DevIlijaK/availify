@@ -4,12 +4,11 @@ import "@uploadthing/react/styles.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 import { ClerkProvider, SignedIn } from "@clerk/nextjs";
-import { db } from "~/server/db";
-import { images } from "~/server/db/schema";
 import { TopNav } from "./_components/topnav";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import { Images } from "./_components/images";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -20,7 +19,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const allImages = await db.select().from(images);
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <ClerkProvider>
@@ -37,9 +35,7 @@ export default async function RootLayout({
           <body>
             <TopNav />
             <SignedIn>
-              {allImages.map((image) => (
-                <img key={image.id} src={image.url!} alt={"Image"} />
-              ))}
+              <Images />
             </SignedIn>
             {children}
           </body>

@@ -1,11 +1,11 @@
 {
-  "id": "bf8e2b9d-6470-4fc2-b86f-1e1a19f17341",
+  "id": "7409a8c0-06c1-478a-ba5c-4426f7a3ee7d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.theo-tutorial_post": {
-      "name": "theo-tutorial_post",
+    "public.theo_tutorial_images": {
+      "name": "theo_tutorial_images",
       "schema": "",
       "columns": {
         "id": {
@@ -19,6 +19,12 @@
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
         },
         "url": {
           "name": "url",

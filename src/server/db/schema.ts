@@ -16,14 +16,15 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `theo-tutorial_${name}`);
+export const createTable = pgTableCreator((name) => `theo_tutorial_${name}`);
 
 export const images = createTable(
-  "post",
+  "images",
   {
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 256 }),
-    url: varchar("url", { length: 256 }),
+    userId: varchar("user_id", { length: 256 }).notNull(),
+    url: varchar("url", { length: 256 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
