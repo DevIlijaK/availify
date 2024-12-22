@@ -1,48 +1,87 @@
-import "server-only";
+"use server";
+
+import { eq, sql } from "drizzle-orm";
 import { db } from "./db";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
-import serverSideAnalitics from "./analitics";
-import { and, eq } from "drizzle-orm";
-import { images } from "./db/schema";
+import { images, type Product, products, weeklyMenu } from "./db/schema";
+import { type DaysOfWeek } from "~/lib/utils";
 
-export async function getMyImages() {
-  const user = auth();
+export type CreateProductInput = {
+  title: string;
+  description: string;
+  price: string;
+};
 
-  if (!user.userId) throw new Error("Unauthorized!");
-  return db.query.images.findMany({
-    where: (model, { eq }) => eq(model.userId, user.userId),
-    orderBy: (model, { desc }) => desc(model.id),
-  });
+export async function createProduct(
+  input: Product & { dayOfWeek: DaysOfWeek },
+) {
+  const { title, description, price, imageUrl, dayOfWeek } = input;
+
+  if (!title || !description || !price || !imageUrl || !dayOfWeek) {
+    throw new Error("Invalid input!");
+  }
+  const result = await db
+    .select()
+    .from(products)
+    .where(eq(products.title, title));
+
+  if (result.length !== 0) {
+    throw new Error("Proizvod sa ovim imenom već postoji!");
+  }
+
+  const newProduct = await db
+    .insert(products)
+    .values({
+      title,
+      description,
+      price,
+      imageUrl,
+    })
+    .returning();
+
+  if (newProduct[0]) {
+    await db.insert(weeklyMenu).values({
+      dayOfWeek: input.dayOfWeek,
+      productId: newProduct[0].id,
+    });
+  }
+
+  if (!newProduct || newProduct.length === 0) {
+    throw new Error("Failed to insert product.");
+  }
+
+  return newProduct[0];
 }
-export async function getMyImage(input: { id: number }) {
-  const user = auth();
+export async function searchImagesByName(name: string) {
+  const result = await db
+    .select()
+    .from(images)
+    .where(sql`${images.name} LIKE ${sql.raw(`%${name}%`)}`)
+    .execute();
 
-  if (!user.userId) throw new Error("Unauthorized!");
-
-  const image = await db.query.images.findFirst({
-    where: (model, { eq, and }) =>
-      and(eq(model.userId, user.userId), eq(model.id, input.id)),
-  });
-  if (!image) throw new Error("No image found");
-  return image;
+  return result;
 }
-export async function deleteMyImage(input: { id: number }) {
-  const { id } = input;
+export async function getAllImages() {
+  const result = await db.select().from(images); // Select from the images table
 
-  const user = auth();
+  return result;
+}
+export async function getProductsByDay(input: DaysOfWeek) {
+  const result = await db
+    .select({
+      id: products.id,
+      title: products.title,
+      description: products.description,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      createdAt: products.createdAt,
+      updatedAt: products.updatedAt,
+    })
+    .from(weeklyMenu)
+    .innerJoin(products, eq(weeklyMenu.productId, products.id))
+    .where(eq(weeklyMenu.dayOfWeek, input));
 
-  if (!user.userId) throw new Error("Unauthorized!");
-
-  await db
-    .delete(images)
-    .where(and(eq(images.userId, user.userId), eq(images.id, input.id)));
-
-  serverSideAnalitics.capture({
-    distinctId: user.userId,
-    event: "delete image",
-    properties: { imageId: id },
-  });
-
-  redirect("/");
+  return result;
+}
+export async function deleteProduct(id: string) {
+  await db.delete(products).where(eq(products.id, id));
 }

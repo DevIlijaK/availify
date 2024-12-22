@@ -8,6 +8,34 @@
       "when": 1726386366791,
       "tag": "0000_strange_sebastian_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1734810197412,
+      "tag": "0001_bizarre_grandmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1734812911289,
+      "tag": "0002_warm_red_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1734815007709,
+      "tag": "0003_oval_agent_zero",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1734857329488,
+      "tag": "0004_same_whiplash",
+      "breakpoints": true
     }
   ]
 }

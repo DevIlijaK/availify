@@ -23,9 +23,9 @@ export default function HomePage() {
         <p>{view === View.DAY ? "dan" : "nedelja"}</p>
       </div>
       {view === View.WEEK ? (
-        <WeekView editable={false} />
+        <WeekView editable={true} />
       ) : (
-        <DayView editable={false} />
+        <DayView editable={true} />
       )}
     </div>
   );

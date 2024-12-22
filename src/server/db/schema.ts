@@ -5,8 +5,9 @@ import { sql } from "drizzle-orm";
 import {
   index,
   pgTableCreator,
-  serial,
+  text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -16,15 +17,32 @@ import {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const createTable = pgTableCreator((name) => `theo_tutorial_${name}`);
+export const createTable = pgTableCreator((name) => `availify_${name}`);
 
-export const images = createTable(
-  "images",
+export const weeklyMenu = createTable(
+  "weekly_menu",
   {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    userId: varchar("user_id", { length: 256 }).notNull(),
-    url: varchar("url", { length: 256 }).notNull(),
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    productId: uuid("product_id").notNull(),
+    dayOfWeek: varchar("day_of_week", { length: 10 }).notNull(),
+  },
+  (weeklyMenu) => ({
+    productIndex: index("product_idx").on(weeklyMenu.productId),
+  }),
+);
+
+export const products = createTable(
+  "products",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    title: varchar("title", { length: 256 }).notNull(),
+    description: text("description").notNull(),
+    price: varchar("price", { length: 256 }).notNull(),
+    imageUrl: varchar("image_url", { length: 512 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -32,7 +50,23 @@ export const images = createTable(
       () => new Date(),
     ),
   },
-  (images) => ({
-    nameIndex: index("name_idx").on(images.name),
+  (products) => ({
+    titleIndex: index("title_idx").on(products.title), // Optional index on title
   }),
 );
+
+export const images = createTable(
+  "images",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`), // UUID primary key with default value
+    name: varchar("name", { length: 256 }).notNull(), // Image name
+    url: varchar("url", { length: 512 }).notNull(), // Image URL
+  },
+  (images) => ({
+    nameIndex: index("name_idx").on(images.name), // Index on name for search
+  }),
+);
+export type Product = typeof products.$inferInsert;
+export type ImageItem = typeof images.$inferInsert;
