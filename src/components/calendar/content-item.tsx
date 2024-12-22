@@ -30,7 +30,7 @@ const ContentItem = ({
         />
       </div>
 
-      <div className="flex flex-1 flex-col justify-between">
+      <div className="flex h-full flex-1 flex-col justify-between">
         <div className="flex flex-col">
           <h2 className="text-sm font-semibold">{product.title}</h2>
           <p className="max-h-16 overflow-hidden text-xs">

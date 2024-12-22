@@ -22,8 +22,10 @@ export default async function RootLayout({
       <CSPostHogProvider>
         <html lang="en" className={`${GeistSans.variable}`}>
           <body>
-            <main className="flex h-screen w-screen items-center justify-center">
-              <div className="h-[640px] w-[360px]">{children}</div>
+            <main className="flex h-screen w-screen items-center justify-center overflow-hidden">
+              <div className="h-full w-full md:h-[740px] md:w-[360px]">
+                {children}
+              </div>
             </main>
             {modal}
             <div id="modal-root" />

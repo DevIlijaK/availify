@@ -81,7 +81,7 @@ const WeekView = ({ editable }: { editable: boolean }) => {
           {startOfWeekFormatted} - {endOfWeekFormatted}
         </h1>
       </header>
-      <div className="flex h-full w-full flex-col justify-between">
+      <div className="no-scrollbar flex h-full w-full flex-col justify-between overflow-y-scroll">
         {Object.entries(DaysOfWeek).map(([key, value]) => (
           <WeekDay key={key} day={value} />
         ))}
