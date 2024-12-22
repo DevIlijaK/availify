@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://availify-tau.vercel.app/
+
+# Sitemaps
+Sitemap: https://availify-tau.vercel.app/sitemap.xml

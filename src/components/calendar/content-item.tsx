@@ -17,7 +17,7 @@ const ContentItem = ({
           className="absolute right-0 top-0 cursor-pointer rounded-full p-2 hover:bg-gray-200"
           onClick={() => product.id && deleteProduct(product.id)}
         >
-          <Trash2 />
+          <Trash2 height={16} width={16} />
         </div>
       )}
       <div className="flex-shrink-0">

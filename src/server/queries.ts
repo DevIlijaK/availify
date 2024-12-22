@@ -1,6 +1,6 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { db } from "./db";
 import { images, type Product, products, weeklyMenu } from "./db/schema";
 import { type DaysOfWeek } from "~/lib/utils";
@@ -55,7 +55,7 @@ export async function searchImagesByName(name: string) {
   const result = await db
     .select()
     .from(images)
-    .where(sql`${images.name} LIKE ${sql.raw(`%${name}%`)}`)
+    .where(like(images.name, `%${name}%`))
     .execute();
 
   return result;
