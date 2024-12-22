@@ -85,3 +85,42 @@ export async function getProductsByDay(input: DaysOfWeek) {
 export async function deleteProduct(id: string) {
   await db.delete(products).where(eq(products.id, id));
 }
+
+// Function to get products by day
+export async function getProductsByDays() {
+  try {
+    // Perform the query
+    const results = await db
+      .select({
+        dayOfWeek: weeklyMenu.dayOfWeek,
+        productId: weeklyMenu.productId,
+        title: products.title,
+        description: products.description,
+        price: products.price,
+        imageUrl: products.imageUrl,
+      })
+      .from(weeklyMenu)
+      .innerJoin(products, eq(weeklyMenu.productId, products.id))
+      .orderBy(weeklyMenu.dayOfWeek);
+
+    // Grouping products by day of the week
+    const groupedByDay: Record<string, Product[]> = {};
+
+    results.forEach((result) => {
+      const { dayOfWeek, ...productDetails } = result;
+
+      // Initialize the array if it doesn't exist yet for the specific day
+      if (!groupedByDay[dayOfWeek]) {
+        groupedByDay[dayOfWeek] = [];
+      }
+
+      // Push the product details into the corresponding day group
+      groupedByDay[dayOfWeek].push(productDetails as Product);
+    });
+
+    return groupedByDay;
+  } catch (error) {
+    console.error("Error fetching products by day:", error);
+    throw error;
+  }
+}

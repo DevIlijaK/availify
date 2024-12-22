@@ -1,15 +1,34 @@
 "use client";
 
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
+import { Button } from "../ui/button";
+import { DaysOfWeek } from "~/lib/utils";
+import { WeekDay } from "./week-day";
 
 const WeekView = ({ editable }: { editable: boolean }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [data, setData] = useState<
+    | Record<
+        string,
+        {
+          title: string;
+          description: string;
+          price: string;
+          imageUrl: string;
+          id?: string | undefined;
+          createdAt?: Date | undefined;
+          updatedAt?: Date | null | undefined;
+        }[]
+      >
+    | undefined
+  >(undefined);
 
-  // Function to get the start of the week (Sunday)
+  // Function to get the start of the week (Monday)
   const getStartOfWeek = (date: Date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day;
+    const diff = startOfWeek.getDate() - (day === 0 ? 6 : day - 1); // Adjust for Monday
     startOfWeek.setDate(diff);
     return startOfWeek;
   };
@@ -56,31 +75,39 @@ const WeekView = ({ editable }: { editable: boolean }) => {
   });
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
+    <div className="flex h-full flex-col items-center justify-between overflow-hidden bg-transparent">
       <header className="mb-4 text-center">
-        <h1 className="text-2xl font-bold">
+        <h1 className="font-bold">
           {startOfWeekFormatted} - {endOfWeekFormatted}
         </h1>
       </header>
-      <div className="space-x-4">
-        <button
+      <div className="flex h-full w-full flex-col justify-between">
+        {Object.entries(DaysOfWeek).map(([key, value]) => (
+          <WeekDay key={key} day={value} />
+        ))}
+      </div>
+
+      <div className="flex w-full items-center justify-between gap-4 pt-4">
+        <div
           onClick={previousWeek}
-          className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-gray-200"
         >
-          Previous Week
-        </button>
-        <button
+          <ChevronLeft />
+        </div>
+        <Button
           onClick={thisWeek}
-          className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
+          variant="outline"
+          className="rounded-full px-6"
         >
-          This Week
-        </button>
-        <button
+          Trenutna nedelja
+        </Button>
+
+        <div
           onClick={nextWeek}
-          className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-gray-200"
         >
-          Next Week
-        </button>
+          <ChevronRight />
+        </div>
       </div>
     </div>
   );
