@@ -23,7 +23,7 @@ export default async function RootLayout({
         <html lang="en" className={`${GeistSans.variable}`}>
           <body>
             <main className="flex h-screen w-screen items-center justify-center overflow-hidden">
-              <div className="h-dvh w-full md:h-[740px] md:w-[360px]">
+              <div className="h-[85vh] w-full md:h-[740px] md:w-[360px]">
                 {children}
               </div>
             </main>
