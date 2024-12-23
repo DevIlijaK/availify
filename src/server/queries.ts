@@ -82,6 +82,57 @@ export async function getProductsByDay(input: DaysOfWeek) {
 
   return result;
 }
+export async function getProducts() {
+  const rawResult = await db
+    .select({
+      id: products.id,
+      title: products.title,
+      description: products.description,
+      price: products.price,
+      imageUrl: products.imageUrl,
+      createdAt: products.createdAt,
+      updatedAt: products.updatedAt,
+      day: weeklyMenu.dayOfWeek,
+    })
+    .from(weeklyMenu)
+    .innerJoin(products, eq(weeklyMenu.productId, products.id));
+
+  const groupedResult = rawResult.reduce(
+    (acc: Record<string, Product[]>, item) => {
+      const { day, ...product } = item;
+
+      if (!acc[day]) {
+        acc[day] = [];
+      }
+
+      acc[day].push(product);
+
+      return acc;
+    },
+    {},
+  );
+  const dayOrder = [
+    "Ponedeljak",
+    "Utorak",
+    "Sreda",
+    "Četvrtak",
+    "Petak",
+    "Subota",
+    "Nedelja",
+  ];
+
+  return Object.entries(groupedResult)
+    .sort((a, b) => {
+      const indexA = dayOrder.indexOf(a[0]);
+      const indexB = dayOrder.indexOf(b[0]);
+      return indexA - indexB;
+    })
+    .map(([day, products]) => ({
+      day,
+      products,
+    }));
+}
+
 export async function deleteProduct(id: string) {
   await db.delete(products).where(eq(products.id, id));
 }

@@ -1,30 +1,32 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { DaysOfWeek } from "~/lib/utils";
+import { getProducts } from "~/server/queries";
+import { type Product } from "~/server/db/schema";
 import { WeekDay } from "./week-day";
 
 const WeekView = ({ editable }: { editable: boolean }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [data, setData] = useState<
-    | Record<
-        string,
-        {
-          title: string;
-          description: string;
-          price: string;
-          imageUrl: string;
-          id?: string | undefined;
-          createdAt?: Date | undefined;
-          updatedAt?: Date | null | undefined;
-        }[]
-      >
+  const [productsByDay, setProductsByDay] = useState<
+    | {
+        day: string;
+        products: Product[];
+      }[]
     | undefined
   >(undefined);
 
-  // Function to get the start of the week (Monday)
+  console.log(productsByDay);
+
+  useEffect(() => {
+    const getData = async () => {
+      const result = await getProducts();
+      setProductsByDay(result);
+    };
+    void getData();
+  }, []);
+
   const getStartOfWeek = (date: Date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
@@ -33,7 +35,6 @@ const WeekView = ({ editable }: { editable: boolean }) => {
     return startOfWeek;
   };
 
-  // Function to change to the previous week
   const previousWeek = () => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
@@ -42,7 +43,6 @@ const WeekView = ({ editable }: { editable: boolean }) => {
     });
   };
 
-  // Function to change to the next week
   const nextWeek = () => {
     setCurrentDate((prevDate) => {
       const newDate = new Date(prevDate);
@@ -51,15 +51,12 @@ const WeekView = ({ editable }: { editable: boolean }) => {
     });
   };
 
-  // Function to reset the date to the current week
   const thisWeek = () => {
     setCurrentDate(new Date());
   };
 
-  // Get the start of the current week
   const startOfWeek = getStartOfWeek(currentDate);
 
-  // Format the start and end dates of the current week
   const startOfWeekFormatted = startOfWeek.toLocaleDateString("en-US", {
     weekday: "short",
     month: "short",
@@ -82,9 +79,19 @@ const WeekView = ({ editable }: { editable: boolean }) => {
         </h1>
       </header>
       <div className="no-scrollbar flex h-full w-full flex-col justify-between overflow-y-scroll">
-        {Object.entries(DaysOfWeek).map(([key, value]) => (
-          <WeekDay key={key} day={value} />
-        ))}
+        {productsByDay?.map(({ day, products }) => {
+          return (
+            <div key={day} className="flex h-full w-full flex-col">
+              <div className="min-w-24 flex-shrink-0 border-b p-1">
+                <p>
+                  {day}, dostupno {products.length}{" "}
+                  {products.length === 1 ? "jelo" : "jela"}
+                </p>
+              </div>
+              <WeekDay products={products} />
+            </div>
+          );
+        })}
       </div>
 
       <div className="flex w-full items-center justify-between gap-4 pt-4">
