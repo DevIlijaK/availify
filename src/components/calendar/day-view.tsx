@@ -88,7 +88,7 @@ const DayView = ({ editable }: { editable: boolean }) => {
         </div>
       )}
 
-      <div className="flex w-full items-center justify-between gap-4 pt-4">
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between gap-4 bg-white p-4 shadow-md">
         <div
           onClick={previousDay}
           className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full p-2 hover:bg-gray-200"
