@@ -34,7 +34,7 @@ export const ProductDrawer = ({
               height={100}
               className="h-[150px] w-[150px] rounded-lg"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col justify-between gap-4">
               <p className="text-sm text-gray-500">{product.description}</p>
               <p className="font-bold">Cena: {product.price}</p>
             </div>

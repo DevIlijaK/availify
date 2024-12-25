@@ -174,11 +174,13 @@ const CreateNewProduct = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {Object.values(DaysOfWeek).map((day) => (
-                          <SelectItem key={day} value={day}>
-                            {day.charAt(0).toUpperCase() + day.slice(1)}
-                          </SelectItem>
-                        ))}
+                        {Object.values(DaysOfWeek)
+                          .filter((day) => day !== DaysOfWeek.SUNDAY)
+                          .map((day) => (
+                            <SelectItem key={day} value={day}>
+                              {day.charAt(0).toUpperCase() + day.slice(1)}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

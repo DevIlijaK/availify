@@ -2,6 +2,8 @@ import { Trash2 } from "lucide-react";
 import Image from "next/image"; // Assuming you're using Next.js Image component
 import { type Product } from "~/server/db/schema";
 import { deleteProduct } from "~/server/queries";
+import { ProductDrawer } from "../product-drawer";
+import { useState } from "react";
 
 const ContentItem = ({
   product,
@@ -10,6 +12,11 @@ const ContentItem = ({
   product: Product;
   editable: boolean;
 }) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    undefined,
+  );
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   return (
     <div className="relative flex items-center gap-4 border-b-2 p-2">
       {editable && product.id && (
@@ -20,7 +27,13 @@ const ContentItem = ({
           <Trash2 height={16} width={16} />
         </div>
       )}
-      <div className="flex-shrink-0">
+      <div
+        className="flex-shrink-0 cursor-pointer"
+        onClick={() => {
+          setSelectedProduct(product);
+          setIsDrawerOpen(true);
+        }}
+      >
         <Image
           src={product.imageUrl ?? ""}
           alt="Example Image"
@@ -39,6 +52,13 @@ const ContentItem = ({
         </div>
         <p className="text-sm">{product.price}</p>
       </div>
+      {selectedProduct && (
+        <ProductDrawer
+          product={selectedProduct}
+          open={isDrawerOpen}
+          onOpenChange={setIsDrawerOpen}
+        />
+      )}
     </div>
   );
 };
