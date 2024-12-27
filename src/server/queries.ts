@@ -2,7 +2,15 @@
 
 import { eq, like } from "drizzle-orm";
 import { db } from "./db";
-import { images, type Product, products, weeklyMenu } from "./db/schema";
+import {
+  images,
+  menuThemes,
+  type Product,
+  productCategories,
+  type ProductCategory,
+  products,
+  weeklyMenu,
+} from "./db/schema";
 import { type DaysOfWeek } from "~/lib/utils";
 
 export type CreateProductInput = {
@@ -10,6 +18,12 @@ export type CreateProductInput = {
   description: string;
   price: string;
 };
+
+// product
+
+export async function getAllProducts() {
+  return db.select().from(products);
+}
 
 export async function createProduct(
   input: Product & { dayOfWeek: DaysOfWeek },
@@ -174,4 +188,94 @@ export async function getProductsByDays() {
     console.error("Error fetching products by day:", error);
     throw error;
   }
+}
+
+// categories
+
+export async function createCategory(data: {
+  name: string;
+  description?: string;
+  iconName: string;
+}) {
+  console.log("Name is: ", data.name);
+  return db.insert(productCategories).values(data).returning();
+}
+
+// Get all categories
+export async function getAllCategories() {
+  return db.select().from(productCategories);
+}
+
+// Get a single category by ID
+export async function getCategoryById(
+  categoryId: string,
+): Promise<ProductCategory | null | undefined> {
+  const [result] = await db
+    .select()
+    .from(productCategories)
+    .where(eq(productCategories.id, categoryId));
+  return result;
+}
+
+// Update a category by ID
+export async function updateCategory(
+  categoryId: string,
+  data: {
+    name?: string;
+    description?: string;
+    iconName?: string;
+  },
+) {
+  return await db
+    .update(productCategories)
+    .set(data)
+    .where(eq(productCategories.id, categoryId))
+    .returning();
+}
+
+// Delete a category by ID
+export async function deleteCategory(categoryId: string) {
+  return await db
+    .delete(productCategories)
+    .where(eq(productCategories.id, categoryId))
+    .returning();
+}
+
+// menu theme
+
+export async function createMenuTheme(data: {
+  name: string;
+  backgroundColor: string;
+  textColor: string;
+  iconColor: string;
+  borderColor: string;
+}) {
+  return await db.insert(menuThemes).values(data).returning(); // Returns the inserted data
+}
+
+export async function getAllMenuThemes() {
+  return await db.select().from(menuThemes);
+}
+export async function getMenuThemeById(id: string) {
+  return await db
+    .select()
+    .from(menuThemes)
+    .where(eq(menuThemes.id, id))
+    .limit(1); // Get only one result by ID
+}
+export async function updateMenuTheme(
+  id: string,
+  data: {
+    name?: string;
+    backgroundColor?: string;
+    textColor?: string;
+    iconColor?: string;
+    borderColor?: string;
+  },
+) {
+  return await db
+    .update(menuThemes)
+    .set(data)
+    .where(eq(menuThemes.id, id))
+    .returning(); // Returns the updated data
 }

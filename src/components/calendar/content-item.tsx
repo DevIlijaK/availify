@@ -1,9 +1,12 @@
+"use client";
+
 import { Trash2 } from "lucide-react";
 import Image from "next/image"; // Assuming you're using Next.js Image component
 import { type Product } from "~/server/db/schema";
 import { deleteProduct } from "~/server/queries";
 import { ProductDrawer } from "../product-drawer";
 import { useState } from "react";
+import { useMenuTheme } from "../theme-context";
 
 const ContentItem = ({
   product,
@@ -16,11 +19,14 @@ const ContentItem = ({
     undefined,
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const {
+    theme: { borderColor },
+  } = useMenuTheme();
 
   return (
     <>
       <div
-        className="relative flex items-center gap-4 border-b-2 p-2"
+        className="relative flex cursor-pointer items-center gap-4 border-b-2 p-2"
         onClick={() => {
           setSelectedProduct(product);
           setIsDrawerOpen(true);
@@ -34,15 +40,20 @@ const ContentItem = ({
             <Trash2 height={16} width={16} />
           </div>
         )}
-        <div className="flex-shrink-0 cursor-pointer">
-          <Image
-            src={product.imageUrl ?? ""}
-            alt="Example Image"
-            width={100}
-            height={100}
-            className="h-[100px] w-[100px] rounded-lg"
-          />
-        </div>
+        {borderColor && (
+          <div
+            className="flex-shrink-0 rounded-2xl border-2"
+            style={{ borderColor }}
+          >
+            <Image
+              src={product.imageUrl ?? ""}
+              alt="Example Image"
+              width={100}
+              height={100}
+              className="h-[100px] w-[100px] rounded-2xl"
+            />
+          </div>
+        )}
 
         <div className="flex h-full flex-1 flex-col justify-between">
           <div className="flex flex-col">

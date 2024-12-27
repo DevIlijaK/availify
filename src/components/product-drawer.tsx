@@ -7,6 +7,7 @@ import {
   DrawerDescription,
 } from "./ui/drawer";
 import Image from "next/image";
+import { useMenuTheme } from "./theme-context";
 
 export const ProductDrawer = ({
   open,
@@ -17,30 +18,41 @@ export const ProductDrawer = ({
   onOpenChange: (open: boolean) => void;
   product: Product;
 }) => {
+  const {
+    theme: { backgroundColor, textColor, borderColor },
+  } = useMenuTheme();
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[500px]">
-        <DrawerHeader>
-          <DrawerTitle className="text-start">{product.title}</DrawerTitle>
-          <DrawerDescription />
-        </DrawerHeader>
-        {/* Add a scrollable section for content */}
-        <div className="flex h-[calc(100%-150px)] flex-col overflow-y-auto p-4">
-          <div className="flex gap-4">
-            <Image
-              src={product.imageUrl ?? ""}
-              alt="Example Image"
-              width={100}
-              height={100}
-              className="h-[150px] w-[150px] rounded-lg"
-            />
-            <div className="flex flex-col justify-between gap-4">
-              <p className="text-sm text-gray-500">{product.description}</p>
-              <p className="font-bold">Cena: {product.price}</p>
+    backgroundColor &&
+    textColor &&
+    borderColor && (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent
+          className="max-h-[500px]"
+          style={{ backgroundColor, color: textColor }}
+        >
+          <DrawerHeader>
+            <DrawerTitle className="text-start">{product.title}</DrawerTitle>
+            <DrawerDescription />
+          </DrawerHeader>
+          {/* Add a scrollable section for content */}
+          <div className="flex h-[calc(100%-150px)] flex-col overflow-y-auto p-4">
+            <div className="flex gap-4">
+              <Image
+                src={product.imageUrl ?? ""}
+                alt="Example Image"
+                width={100}
+                height={100}
+                className="h-[150px] w-[150px] rounded-2xl border-2"
+                style={{ borderColor }}
+              />
+              <div className="flex flex-col justify-between gap-4">
+                <p className="text-sm">{product.description}</p>
+                <p className="font-bold">Cena: {product.price}</p>
+              </div>
             </div>
           </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
+        </DrawerContent>
+      </Drawer>
+    )
   );
 };

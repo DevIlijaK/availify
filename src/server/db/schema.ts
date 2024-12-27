@@ -51,7 +51,22 @@ export const products = createTable(
     ),
   },
   (products) => ({
-    titleIndex: index("title_idx").on(products.title), // Optional index on title
+    titleIndex: index("title_idx").on(products.title),
+  }),
+);
+
+export const productCategories = createTable(
+  "product_categories",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 128 }).notNull(),
+    description: text("description"),
+    iconName: varchar("icon_name", { length: 128 }).notNull(),
+  },
+  (productCategories) => ({
+    nameIndex: index("category_name_idx").on(productCategories.name),
   }),
 );
 
@@ -68,5 +83,31 @@ export const images = createTable(
     nameIndex: index("name_idx").on(images.name), // Index on name for search
   }),
 );
+
+export const menuThemes = createTable(
+  "menu_themes",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 255 }).notNull(),
+    backgroundColor: varchar("background_color", { length: 7 }),
+    textColor: varchar("text_color", { length: 7 }),
+    iconColor: varchar("icon_color", { length: 7 }),
+    borderColor: varchar("border_color", { length: 7 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date(),
+    ),
+  },
+  (menuThemes) => ({
+    nameIndex: index("menu_theme_name_idx").on(menuThemes.name),
+  }),
+);
+
 export type Product = typeof products.$inferInsert;
 export type ImageItem = typeof images.$inferInsert;
+export type ProductCategory = typeof productCategories.$inferSelect;
+export type MenuTheme = typeof menuThemes.$inferSelect;

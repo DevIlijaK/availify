@@ -36,6 +36,20 @@
       "when": 1734857329488,
       "tag": "0004_same_whiplash",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1735321872288,
+      "tag": "0005_bent_swordsman",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1735325311862,
+      "tag": "0006_eager_tigra",
+      "breakpoints": true
     }
   ]
 }
