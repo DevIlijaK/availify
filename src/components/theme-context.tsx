@@ -52,7 +52,7 @@ export const MenuThemeProvider = ({
       >
         <div
           className={cn(
-            "flex h-full w-full flex-col items-center justify-between gap-4 overflow-hidden bg-transparent p-4",
+            "flex h-full w-full flex-col items-center justify-between gap-4 overflow-hidden bg-transparent",
           )}
           style={{
             backgroundColor: theme.backgroundColor,

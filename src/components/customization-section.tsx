@@ -14,12 +14,16 @@ import { useMenuTheme } from "./theme-context";
 
 export const CustomizationSection = () => {
   const [open, setOpen] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     theme: { backgroundColor, borderColor },
     isDirty,
     resetTheme,
     saveTheme,
   } = useMenuTheme();
+
+  console.log("Is dirty: ", isDirty);
+  console.log("lOADING: ", isLoading);
   return (
     backgroundColor &&
     borderColor && (
@@ -30,9 +34,9 @@ export const CustomizationSection = () => {
         value={open}
         onValueChange={setOpen}
         className={cn(
-          "fixed right-1 top-1/2 -translate-y-1/2 transform rounded-2xl bg-background p-4 shadow-lg",
+          "fixed right-1 top-1/2 -translate-y-1/2 transform rounded-2xl border-2 bg-background p-4",
         )}
-        style={{ backgroundColor }}
+        style={{ backgroundColor, borderColor }}
       >
         <AccordionItem
           value="item-1"
@@ -47,12 +51,20 @@ export const CustomizationSection = () => {
             <MenuThemeSelector />
           </AccordionContent>
           <AccordionTrigger className="flex flex-row-reverse [&>svg]:hidden">
-            {isDirty ? (
+            {isLoading ? (
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-full border-2"
+                style={{ borderColor }}
+              >
+                <Icon name="Pencil" />
+              </div>
+            ) : isDirty ? (
               <div className="flex flex-col gap-4">
                 <div
                   className="flex h-10 w-10 items-center justify-center rounded-full border-2"
                   style={{ borderColor }}
                   onClick={async (event) => {
+                    setIsLoading(true);
                     await saveTheme();
                     event.stopPropagation();
                   }}

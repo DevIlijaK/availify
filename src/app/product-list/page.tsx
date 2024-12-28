@@ -17,8 +17,8 @@ export default async function ProductListView() {
   return (
     initialTheme[0] && (
       <MenuThemeProvider initialTheme={initialTheme[0]}>
-        <CategoriesList categories={categories} />
-        <ProductList products={products} />
+        <CategoriesList className="h-24" categories={categories} />
+        <ProductList className="pt-24" products={products} />
         <CustomizationSection />
       </MenuThemeProvider>
     )
