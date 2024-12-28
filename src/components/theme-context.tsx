@@ -1,12 +1,22 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { cn } from "~/lib/utils";
 import { type MenuTheme } from "~/server/db/schema";
+import { updateMenuTheme } from "~/server/queries";
 
 interface MenuThemeContextType {
   theme: MenuTheme;
   setTheme: (theme: MenuTheme) => void;
+  isDirty: boolean;
+  saveTheme: () => Promise<void>;
+  resetTheme: () => void;
 }
 
 const MenuThemeContext = createContext<MenuThemeContextType | undefined>(
@@ -21,29 +31,46 @@ export const MenuThemeProvider = ({
   children: ReactNode;
 }) => {
   const [theme, setTheme] = useState(initialTheme);
-  const { backgroundColor, textColor } = theme;
+  const [isDirty, setIsDirty] = useState(false);
+
+  useEffect(() => {
+    const hasChanges = JSON.stringify(theme) !== JSON.stringify(initialTheme);
+    setIsDirty(hasChanges);
+  }, [theme, initialTheme]);
+
+  const saveTheme = async () => {
+    await updateMenuTheme(theme);
+  };
+
+  const resetTheme = () => setTheme(initialTheme);
 
   return (
-    <MenuThemeContext.Provider value={{ theme, setTheme }}>
-      {backgroundColor && textColor && (
+    theme.backgroundColor &&
+    theme.textColor && (
+      <MenuThemeContext.Provider
+        value={{ theme, setTheme, isDirty, saveTheme, resetTheme }}
+      >
         <div
           className={cn(
             "flex h-full w-full flex-col items-center justify-between gap-4 overflow-hidden bg-transparent p-4",
           )}
-          style={{ backgroundColor, color: textColor }}
+          style={{
+            backgroundColor: theme.backgroundColor,
+            color: theme.textColor,
+          }}
         >
           {children}
         </div>
-      )}
-    </MenuThemeContext.Provider>
+      </MenuThemeContext.Provider>
+    )
   );
 };
 
-// Custom hook to access the theme context
+// Custom hook
 export const useMenuTheme = (): MenuThemeContextType => {
   const context = useContext(MenuThemeContext);
   if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error("useMenuTheme must be used within a MenuThemeProvider");
   }
   return context;
 };

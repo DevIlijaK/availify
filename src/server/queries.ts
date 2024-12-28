@@ -4,6 +4,7 @@ import { eq, like } from "drizzle-orm";
 import { db } from "./db";
 import {
   images,
+  type MenuTheme,
   menuThemes,
   type Product,
   productCategories,
@@ -12,6 +13,7 @@ import {
   weeklyMenu,
 } from "./db/schema";
 import { type DaysOfWeek } from "~/lib/utils";
+import { revalidatePath } from "next/cache";
 
 export type CreateProductInput = {
   title: string;
@@ -263,19 +265,13 @@ export async function getMenuThemeById(id: string) {
     .where(eq(menuThemes.id, id))
     .limit(1); // Get only one result by ID
 }
-export async function updateMenuTheme(
-  id: string,
-  data: {
-    name?: string;
-    backgroundColor?: string;
-    textColor?: string;
-    iconColor?: string;
-    borderColor?: string;
-  },
-) {
-  return await db
+export async function updateMenuTheme(newTheme: MenuTheme) {
+  const result = await db
     .update(menuThemes)
-    .set(data)
-    .where(eq(menuThemes.id, id))
+    .set(newTheme)
+    .where(eq(menuThemes.id, newTheme.id))
     .returning(); // Returns the updated data
+
+  revalidatePath("/");
+  return result;
 }
