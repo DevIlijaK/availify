@@ -55,6 +55,24 @@ export const products = createTable(
   }),
 );
 
+export const restaurants = createTable("restaurants", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: varchar("user_id", { length: 256 })
+    .notNull()
+    .references(() => users.id),
+  name: varchar("name", { length: 255 }).notNull(),
+  address: varchar("address", { length: 512 }),
+  logoUrl: varchar("logo_url", { length: 512 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
+});
+
 export const productCategories = createTable(
   "product_categories",
   {
@@ -75,12 +93,12 @@ export const images = createTable(
   {
     id: uuid("id")
       .primaryKey()
-      .default(sql`gen_random_uuid()`), // UUID primary key with default value
-    name: varchar("name", { length: 256 }).notNull(), // Image name
-    url: varchar("url", { length: 512 }).notNull(), // Image URL
+      .default(sql`gen_random_uuid()`),
+    name: varchar("name", { length: 256 }).notNull(),
+    url: varchar("url", { length: 512 }).notNull(),
   },
   (images) => ({
-    nameIndex: index("name_idx").on(images.name), // Index on name for search
+    nameIndex: index("name_idx").on(images.name),
   }),
 );
 
@@ -107,6 +125,20 @@ export const menuThemes = createTable(
   }),
 );
 
+export const users = createTable("users", {
+  id: varchar("id", { length: 256 }).primaryKey(),
+  firstName: varchar("first_name", { length: 256 }),
+  lastName: varchar("last_name", { length: 256 }),
+  imageUrl: varchar("image_url", { length: 256 }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .$onUpdate(() => new Date()),
+});
+
+export type AppUser = typeof users.$inferSelect;
 export type Product = typeof products.$inferInsert;
 export type ImageItem = typeof images.$inferInsert;
 export type ProductCategory = typeof productCategories.$inferSelect;

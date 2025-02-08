@@ -6,7 +6,7 @@ import ContentItem from "../calendar/content-item";
 import { useMenuTheme } from "../theme-context";
 import { cn } from "~/lib/utils";
 
-export const ProductList: FC<{ products: Product[]; className: string }> = ({
+export const ProductList: FC<{ products: Product[]; className?: string }> = ({
   products,
   className,
 }) => {

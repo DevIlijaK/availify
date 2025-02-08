@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { usePostHog } from "posthog-js/react";
+import { type FC } from "react";
 import { toast } from "sonner";
 import { useUploadThing } from "~/utils/uploadthing";
 
@@ -77,7 +78,9 @@ export function LoadingBlocks() {
   );
 }
 
-export function SimpleUploadButton() {
+export const SimpleUploadButton: FC<{ onUploadEnd: () => void }> = ({
+  onUploadEnd,
+}) => {
   const router = useRouter();
   const posthog = usePostHog();
   const { inputProps } = useUploadThingInputProps("imageUploader", {
@@ -93,10 +96,11 @@ export function SimpleUploadButton() {
         },
       );
     },
-    onClientUploadComplete() {
+    onClientUploadComplete(res) {
       toast.dismiss("upload-begin");
       toast("Upload completed!");
-      router.refresh();
+      onUploadEnd();
+      // router.refresh();
     },
     onUploadError(error) {
       posthog.capture("upload_error", { error });
@@ -121,4 +125,4 @@ export function SimpleUploadButton() {
       />
     </div>
   );
-}
+};

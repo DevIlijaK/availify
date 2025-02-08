@@ -10,9 +10,12 @@ import {
   productCategories,
   type ProductCategory,
   products,
+  restaurants,
+  users,
   weeklyMenu,
 } from "./db/schema";
 import { type DaysOfWeek } from "~/lib/utils";
+import { type UserJSON } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export type CreateProductInput = {
@@ -272,6 +275,112 @@ export async function updateMenuTheme(newTheme: MenuTheme) {
     .where(eq(menuThemes.id, newTheme.id))
     .returning(); // Returns the updated data
 
-  revalidatePath("/");
+  revalidatePath("/product-list");
+
   return result;
 }
+// users
+export async function upsertUser(input: { user: UserJSON }) {
+  const { user } = input;
+  const { id, username, first_name, last_name, image_url } = user;
+
+  const userData = {
+    id,
+    username,
+    firstName: first_name,
+    lastName: last_name,
+    imageUrl: image_url,
+  };
+
+  const existingUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, id))
+    .limit(1);
+
+  if (existingUser.length > 0) {
+    await db.update(users).set(userData).where(eq(users.id, id));
+  } else {
+    await db.insert(users).values(userData);
+  }
+}
+// restaurants
+
+export const createRestaurant = async (restaurantData: {
+  userId: string;
+  name: string;
+  address?: string;
+}) => {
+  const { userId, name, address } = restaurantData;
+  try {
+    const result = await db.insert(restaurants).values({
+      userId,
+      name,
+      address,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    return result;
+  } catch (error) {
+    console.error("Error creating restaurant:", error);
+    throw new Error("Failed to create restaurant");
+  }
+};
+
+export const getRestaurantById = async (restaurantId: string) => {
+  try {
+    const restaurant = await db
+      .select()
+      .from(restaurants)
+      .where(eq(restaurants.id, restaurantId));
+
+    return restaurant[0] ?? null;
+  } catch (error) {
+    console.error("Error fetching restaurant:", error);
+    throw new Error("Failed to fetch restaurant");
+  }
+};
+
+export const getRestaurantsByUserId = async (userId: string) => {
+  try {
+    const restaurantsList = await db
+      .select()
+      .from(restaurants)
+      .where(eq(restaurants.userId, userId));
+
+    return restaurantsList;
+  } catch (error) {
+    console.error("Error fetching restaurants by user ID:", error);
+    throw new Error("Failed to fetch restaurants");
+  }
+};
+
+export const updateRestaurant = async (
+  restaurantId: string,
+  updatedData: { name?: string; address?: string },
+) => {
+  try {
+    const result = await db
+      .update(restaurants)
+      .set(updatedData)
+      .where(eq(restaurants.id, restaurantId));
+
+    return result;
+  } catch (error) {
+    console.error("Error updating restaurant:", error);
+    throw new Error("Failed to update restaurant");
+  }
+};
+
+export const deleteRestaurant = async (restaurantId: string) => {
+  try {
+    const result = await db
+      .delete(restaurants)
+      .where(eq(restaurants.id, restaurantId));
+
+    return result;
+  } catch (error) {
+    console.error("Error deleting restaurant:", error);
+    throw new Error("Failed to delete restaurant");
+  }
+};

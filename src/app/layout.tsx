@@ -1,12 +1,21 @@
 import "~/styles/globals.css";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import "@uploadthing/react/styles.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import { CSPostHogProvider } from "./_analitics/provider";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { Icon } from "~/components/icon";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -21,11 +30,21 @@ export default async function RootLayout({
     <ClerkProvider>
       <CSPostHogProvider>
         <html lang="en" className={`${GeistSans.variable}`}>
+          <NextSSRPlugin
+            /**
+             * The `extractRouterConfig` will extract **only** the route configs
+             * from the router to prevent additional information from being
+             * leaked to the client. The data passed to the client is the same
+             * as if you were to fetch `/api/uploadthing` directly.
+             */
+            routerConfig={extractRouterConfig(ourFileRouter)}
+          />
           <body>
-            <main className="flex h-screen w-screen items-center justify-center overflow-hidden">
-              <div className="h-full w-full md:h-[740px] md:w-[360px]">
-                {children}
-              </div>
+            <main>
+              {/* <div className="h-full w-full pt-20 md:h-[740px] md:w-[360px]"> */}
+              {/* <SimpleNavMenu /> */}
+              {children}
+              {/* </div> */}
             </main>
             {modal}
             <div id="modal-root" />
@@ -36,3 +55,26 @@ export default async function RootLayout({
     </ClerkProvider>
   );
 }
+const SimpleNavMenu = () => {
+  return (
+    <div className="fixed top-0 z-20 flex h-20 w-full items-center justify-end bg-white px-4">
+      <SignedOut>
+        <SignInButton>
+          <Icon name="LogIn" />
+        </SignInButton>
+      </SignedOut>
+      <SignedIn>
+        <UserButton
+          appearance={{
+            elements: {
+              userButtonAvatarBox: {
+                width: "42px",
+                height: "42px",
+              },
+            },
+          }}
+        />
+      </SignedIn>
+    </div>
+  );
+};

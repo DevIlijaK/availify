@@ -8,13 +8,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MenuThemeSelector } from "./theme/select-theme";
 import { useMenuTheme } from "./theme-context";
 
 export const CustomizationSection = () => {
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     theme: { backgroundColor, borderColor },
     isDirty,
@@ -22,8 +22,10 @@ export const CustomizationSection = () => {
     saveTheme,
   } = useMenuTheme();
 
-  console.log("Is dirty: ", isDirty);
-  console.log("lOADING: ", isLoading);
+  useEffect(() => {
+    setLoading(false);
+  }, [isDirty]);
+
   return (
     backgroundColor &&
     borderColor && (
@@ -51,44 +53,53 @@ export const CustomizationSection = () => {
             <MenuThemeSelector />
           </AccordionContent>
           <AccordionTrigger className="flex flex-row-reverse [&>svg]:hidden">
-            {isLoading ? (
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-full border-2"
-                style={{ borderColor }}
-              >
-                <Icon name="Pencil" />
-              </div>
-            ) : isDirty ? (
+            {isDirty ? (
               <div className="flex flex-col gap-4">
-                <div
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2"
-                  style={{ borderColor }}
-                  onClick={async (event) => {
-                    setIsLoading(true);
-                    await saveTheme();
-                    event.stopPropagation();
-                  }}
-                >
-                  <Icon name="CheckIcon" />
-                </div>
+                {loading ? (
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded-full border-2"
+                    style={{ borderColor }}
+                    onClick={async () => {
+                      setLoading(true);
+                      await saveTheme();
+                    }}
+                  >
+                    <Icon name="Loader2" className="animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full border-2"
+                      style={{ borderColor }}
+                      onClick={async () => {
+                        setLoading(true);
+                        await saveTheme();
+                      }}
+                    >
+                      <Icon name="CheckIcon" />
+                    </div>
 
-                <div
-                  className="flex h-10 w-10 items-center justify-center rounded-full border-2"
-                  style={{ borderColor }}
-                  onClick={(event) => {
-                    resetTheme();
-                    event.stopPropagation();
-                  }}
-                >
-                  <Icon name="X" />
-                </div>
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-full border-2"
+                      style={{ borderColor }}
+                      onClick={(event) => {
+                        resetTheme();
+                        event.stopPropagation();
+                      }}
+                    >
+                      <Icon name="X" />
+                    </div>
+                  </>
+                )}
               </div>
             ) : (
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-full border-2"
                 style={{ borderColor }}
               >
-                <Icon name="Pencil" />
+                <Icon
+                  name={open === "item-1" ? "ChevronRight" : "ChevronLeft"}
+                />
               </div>
             )}
           </AccordionTrigger>

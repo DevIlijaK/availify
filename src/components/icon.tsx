@@ -79,13 +79,22 @@ import {
   Wine,
   Beer,
   CookingPot,
+  ChevronLeft,
+  LogIn,
   Croissant,
+  Utensils,
+  Loader2,
+  Cake,
 } from "lucide-react";
 
 const icons = {
   AudioWaveform,
   CookingPot,
+  Loader2,
+  Cake,
+  Utensils,
   Croissant,
+  LogIn,
   Presentation,
   Beef,
   Wine,
@@ -161,6 +170,7 @@ const icons = {
   Coffee,
   Menu,
   FileText,
+  ChevronLeft,
   Download,
   File,
 };

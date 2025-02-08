@@ -13,14 +13,15 @@ export default async function ProductListView() {
   const categories = await getAllCategories();
   const initialTheme = await getAllMenuThemes();
 
-  console.log("categories: ", categories);
   return (
+    // <SignedIn>
     initialTheme[0] && (
       <MenuThemeProvider initialTheme={initialTheme[0]}>
         <CategoriesList className="h-24" categories={categories} />
-        <ProductList className="pt-24" products={products} />
+        <ProductList products={products} />
         <CustomizationSection />
       </MenuThemeProvider>
     )
+    // </SignedIn>
   );
 }
