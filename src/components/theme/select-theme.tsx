@@ -16,6 +16,7 @@ const colorThemes = [
     textForeground: "#FFFFFF",
     textMutedForeground: "#A0A0A0",
     productCartBackgroundColor: "#222222",
+    cartLayout: "default",
   },
   {
     // Light Minimal
@@ -118,55 +119,133 @@ export const MenuThemeSelector: FC<ThemeSelectorProps> = ({ className }) => {
   return (
     theme.borderColor &&
     theme.backgroundColor && (
-      <div className={cn("flex items-center gap-4 rounded-2xl", className)}>
-        <p>Boje:</p>
-        <Select
-          onValueChange={(value: string) => {
-            setTheme({ ...theme, ...colorThemes[Number(value)]! });
-          }}
-        >
-          <SelectTrigger
-            className={cn("rounded-xl focus:ring-0")}
-            style={{
-              borderColor: theme.borderColor,
-              backgroundColor: theme.backgroundColor,
+      <div
+        className={cn(
+          "flex flex-col items-center gap-4 rounded-2xl px-2",
+          className,
+        )}
+      >
+        <div className="flex w-full items-center gap-4">
+          <p className="min-w-[50px]">Boje:</p>
+          <Select
+            onValueChange={(value: string) => {
+              setTheme({ ...theme, ...colorThemes[Number(value)]! });
             }}
           >
-            <div className="flex gap-2">
-              {Object.entries(theme).map(([key, value]) => {
-                if (key.toLowerCase().includes("color")) {
-                  return (
-                    <div
-                      key={key}
-                      className="h-7 w-7 rounded-full border-2"
-                      style={{ backgroundColor: value as string }}
-                    />
-                  );
-                }
-                return null;
-              })}
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            {colorThemes.map((theme, index) => (
-              <SelectItem key={index} value={index.toString()}>
-                <div className="flex gap-2">
-                  {Object.entries(theme).map(([key, value]) => {
-                    if (key.toLowerCase().includes("color")) {
-                      return (
-                        <div
-                          key={key}
-                          className="h-7 w-7 rounded-full border-2"
-                          style={{ backgroundColor: value }}
-                        />
-                      );
-                    }
-                  })}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+            <SelectTrigger
+              className={cn("focus:ring-0")}
+              style={{
+                borderColor: theme.borderColor,
+                backgroundColor: theme.backgroundColor,
+              }}
+            >
+              <div className="flex gap-2">
+                {Object.entries(theme).map(([key, value]) => {
+                  if (key.toLowerCase().includes("color")) {
+                    return (
+                      <div
+                        key={key}
+                        className="h-7 w-7 rounded-full border-2"
+                        style={{ backgroundColor: value as string }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {colorThemes.map((theme, index) => (
+                <SelectItem key={index} value={index.toString()}>
+                  <div className="flex gap-2">
+                    {Object.entries(theme).map(([key, value]) => {
+                      if (key.toLowerCase().includes("color")) {
+                        return (
+                          <div
+                            key={key}
+                            className="h-7 w-7 rounded-full border-2"
+                            style={{ backgroundColor: value }}
+                          />
+                        );
+                      }
+                    })}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex w-full items-center justify-start gap-4 text-foreground">
+          <p className="min-w-[50px]">Layout:</p>
+          <Select
+            value={theme.cartLayout}
+            onValueChange={(
+              value:
+                | "default"
+                | "card"
+                | "compact"
+                | "modern"
+                | "minimal"
+                | "featured",
+            ) => {
+              setTheme({ ...theme, cartLayout: value });
+            }}
+          >
+            <SelectTrigger
+              className="w-full"
+              style={{
+                borderColor: theme.borderColor,
+                backgroundColor: theme.backgroundColor,
+                color: theme.textColor!,
+              }}
+            >
+              {theme.cartLayout}
+            </SelectTrigger>
+            <SelectContent
+              style={{
+                backgroundColor: theme.backgroundColor,
+              }}
+            >
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="card">Card</SelectItem>
+              <SelectItem value="compact">Compact</SelectItem>
+              <SelectItem value="modern">Modern</SelectItem>
+              <SelectItem value="minimal">Minimal</SelectItem>
+              <SelectItem value="featured">Featured</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex w-full items-center justify-start gap-4 text-foreground">
+          <p className="min-w-[50px]">Grid:</p>
+          <Select
+            value={theme.gridLayout}
+            onValueChange={(value: "list" | "grid" | "compact") => {
+              setTheme({ ...theme, gridLayout: value });
+            }}
+          >
+            <SelectTrigger
+              className="w-full"
+              style={{
+                borderColor: theme.borderColor,
+                backgroundColor: theme.backgroundColor,
+                color: theme.textColor!,
+              }}
+            >
+              {theme.gridLayout}
+            </SelectTrigger>
+            <SelectContent
+              style={{
+                backgroundColor: theme.backgroundColor,
+              }}
+            >
+              <SelectItem value="list">List</SelectItem>
+              <SelectItem value="grid">Grid</SelectItem>
+              <SelectItem value="compact">Compact Grid</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     )
   );

@@ -118,6 +118,12 @@ export const menuThemes = createTable(
     productCartBackgroundColor: varchar("product_cart_background_color", {
       length: 7,
     }),
+    cartLayout: varchar("cart_layout", { length: 20 })
+      .default("default")
+      .notNull(),
+    gridLayout: varchar("grid_layout", { length: 20 })
+      .default("list")
+      .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

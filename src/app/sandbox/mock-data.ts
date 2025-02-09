@@ -119,5 +119,7 @@ export const mockData = {
     iconColor: "#gold",
     borderColor: "#333333",
     productCartBackgroundColor: "#222222",
+    cartLayout: "default",
+    gridLayout: "list",
   },
 };

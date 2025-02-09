@@ -43,7 +43,7 @@ export const CustomizationSection = () => {
         <AccordionItem
           value="item-1"
           className={cn(
-            "flex h-[70px] max-h-[90%] transition-all duration-500",
+            "flex h-[70px] max-h-[90%] border-b-0 transition-all duration-500",
             {
               "h-[200px]": open === "item-1",
             },
