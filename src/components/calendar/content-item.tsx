@@ -20,13 +20,23 @@ const ContentItem = ({
   );
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const {
-    theme: { borderColor },
+    theme: {
+      borderColor,
+      textForeground,
+      textMutedForeground,
+      textColor,
+      productCartBackgroundColor,
+    },
   } = useMenuTheme();
 
   return (
     <>
       <div
-        className="relative flex cursor-pointer items-center gap-4 border-b-2 p-2"
+        className="relative flex cursor-pointer items-center gap-4 rounded-2xl border bg-background p-4"
+        style={{
+          backgroundColor: productCartBackgroundColor!,
+          borderColor: borderColor!,
+        }}
         onClick={() => {
           setSelectedProduct(product);
           setIsDrawerOpen(true);
@@ -50,19 +60,32 @@ const ContentItem = ({
               alt="Example Image"
               width={100}
               height={100}
-              className="h-[100px] w-[100px] rounded-2xl"
+              className="h-[100px] w-[100px] rounded-xl"
             />
           </div>
         )}
 
-        <div className="flex h-full flex-1 flex-col justify-between">
+        <div className="flex h-full flex-1 flex-col items-start gap-4">
           <div className="flex flex-col">
-            <h2 className="text-sm font-semibold">{product.title}</h2>
-            <p className="max-h-16 overflow-hidden text-xs">
+            <h2
+              className="text-lg font-medium leading-6"
+              style={{ color: textColor! }}
+            >
+              {product.title}
+            </h2>
+            <p
+              className="max-h-16 overflow-hidden text-sm"
+              style={{ color: textMutedForeground! }}
+            >
               {product.description}
             </p>
           </div>
-          <p className="text-sm">{product.price}</p>
+          <div
+            className="w-fit rounded-full bg-muted px-4 py-2 text-foreground"
+            style={{ color: textForeground! }}
+          >
+            <p className="text-sm font-semibold">{product.price}</p>
+          </div>
         </div>
       </div>
       {selectedProduct && (

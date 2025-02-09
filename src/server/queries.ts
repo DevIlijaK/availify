@@ -269,11 +269,13 @@ export async function getMenuThemeById(id: string) {
     .limit(1); // Get only one result by ID
 }
 export async function updateMenuTheme(newTheme: MenuTheme) {
+  console.log({ newTheme });
   const result = await db
     .update(menuThemes)
     .set(newTheme)
     .where(eq(menuThemes.id, newTheme.id))
     .returning(); // Returns the updated data
+  console.log({ result });
 
   revalidatePath("/product-list");
 

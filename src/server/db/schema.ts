@@ -113,6 +113,11 @@ export const menuThemes = createTable(
     textColor: varchar("text_color", { length: 7 }),
     iconColor: varchar("icon_color", { length: 7 }),
     borderColor: varchar("border_color", { length: 7 }),
+    textForeground: varchar("text_foreground", { length: 7 }),
+    textMutedForeground: varchar("text_muted_foreground", { length: 7 }),
+    productCartBackgroundColor: varchar("product_cart_background_color", {
+      length: 7,
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),

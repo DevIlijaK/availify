@@ -13,8 +13,8 @@ import { MenuThemeSelector } from "./theme/select-theme";
 import { useMenuTheme } from "./theme-context";
 
 export const CustomizationSection = () => {
-  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const {
     theme: { backgroundColor, borderColor },
     isDirty,
@@ -59,10 +59,6 @@ export const CustomizationSection = () => {
                   <div
                     className="flex h-10 w-10 items-center justify-center rounded-full border-2"
                     style={{ borderColor }}
-                    onClick={async () => {
-                      setLoading(true);
-                      await saveTheme();
-                    }}
                   >
                     <Icon name="Loader2" className="animate-spin" />
                   </div>

@@ -26,7 +26,6 @@ export const CategoriesList: FC<{
         style={{ backgroundColor }}
       >
         {categories.map((category) => {
-          console.log({ category });
           return (
             <div
               className={cn(

@@ -112,27 +112,12 @@ export const mockData = {
     },
   ],
 
-  menuThemes: [
-    {
-      name: "Classic Dark",
-      backgroundColor: "#1a1a1a",
-      textColor: "#ffffff",
-      iconColor: "#gold",
-      borderColor: "#333333",
-    },
-    {
-      name: "Light Modern",
-      backgroundColor: "#ffffff",
-      textColor: "#333333",
-      iconColor: "#0066cc",
-      borderColor: "#e0e0e0",
-    },
-    {
-      name: "Rustic",
-      backgroundColor: "#f5e6d3",
-      textColor: "#2d2d2d",
-      iconColor: "#8b4513",
-      borderColor: "#d2691e",
-    },
-  ],
+  initialTheme: {
+    name: "Classic Dark",
+    backgroundColor: "#1a1a1a",
+    textColor: "#ffffff",
+    iconColor: "#gold",
+    borderColor: "#333333",
+    productCartBackgroundColor: "#222222",
+  },
 };

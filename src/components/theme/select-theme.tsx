@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 
 import { useMenuTheme } from "../theme-context";
 import { type FC } from "react";
@@ -14,66 +8,107 @@ import { cn } from "~/lib/utils";
 
 const colorThemes = [
   {
-    backgroundColor: "#F3F4F6",
-    borderColor: "#A3BFFA",
-    iconColor: "#2563EB",
-    textColor: "#000000",
-  },
-  {
-    backgroundColor: "#FFFAF1",
-    borderColor: "#FBBF24",
-    iconColor: "#F59E0B",
-    textColor: "#374151",
-  },
-  {
-    backgroundColor: "#F9FAFB",
-    borderColor: "#D1D5DB",
-    iconColor: "#6B7280",
-    textColor: "#000000",
-  },
-  {
-    backgroundColor: "#D1E7DD",
-    borderColor: "#38B2AC",
-    iconColor: "#2D3748",
+    // Modern Dark
+    backgroundColor: "#1A1A1A",
+    borderColor: "#333333",
+    iconColor: "#FFD700", // Gold
     textColor: "#FFFFFF",
+    textForeground: "#FFFFFF",
+    textMutedForeground: "#A0A0A0",
+    productCartBackgroundColor: "#222222",
   },
   {
-    backgroundColor: "#FECACA",
-    borderColor: "#F87171",
-    iconColor: "#DC2626",
-    textColor: "#FFFFFF",
+    // Light Minimal
+    backgroundColor: "#FFFFFF",
+    borderColor: "#E5E7EB",
+    iconColor: "#3B82F6", // Blue
+    textColor: "#111827",
+    textForeground: "#111827",
+    textMutedForeground: "#6B7280",
+    productCartBackgroundColor: "#F9FAFB",
   },
   {
-    backgroundColor: "#FFF5E1",
-    borderColor: "#FFB84C",
-    iconColor: "#FF8303",
-    textColor: "#5F370E",
+    // Forest Green
+    backgroundColor: "#F0FFF4",
+    borderColor: "#48BB78",
+    iconColor: "#2F855A",
+    textColor: "#1A4731",
+    textForeground: "#1A4731",
+    textMutedForeground: "#276749",
+    productCartBackgroundColor: "#E6FFEC",
   },
   {
-    backgroundColor: "#E3FCEF",
-    borderColor: "#81E6D9",
-    iconColor: "#319795",
-    textColor: "#22543D",
+    // Ocean Blue
+    backgroundColor: "#EBF8FF",
+    borderColor: "#4299E1",
+    iconColor: "#2B6CB0",
+    textColor: "#2A4365",
+    textForeground: "#2A4365",
+    textMutedForeground: "#2C5282",
+    productCartBackgroundColor: "#E2F4FF",
   },
   {
-    backgroundColor: "#EBF4FF",
-    borderColor: "#63B3ED",
-    iconColor: "#3182CE",
-    textColor: "#2C5282",
+    // Warm Sunset
+    backgroundColor: "#FFFAF0",
+    borderColor: "#ED8936",
+    iconColor: "#C05621",
+    textColor: "#7B341E",
+    textForeground: "#7B341E",
+    textMutedForeground: "#9C4221",
+    productCartBackgroundColor: "#FFF5EB",
   },
   {
-    backgroundColor: "#FEE2E2",
-    borderColor: "#FC8181",
-    iconColor: "#E53E3E",
-    textColor: "#742A2A",
-  },
-  {
-    backgroundColor: "#EDE9FE",
-    borderColor: "#B794F4",
+    // Royal Purple
+    backgroundColor: "#FAF5FF",
+    borderColor: "#805AD5",
     iconColor: "#6B46C1",
     textColor: "#44337A",
+    textForeground: "#44337A",
+    textMutedForeground: "#553C9A",
+    productCartBackgroundColor: "#F5EBFF",
+  },
+  {
+    // Cherry Red
+    backgroundColor: "#FFF5F5",
+    borderColor: "#F56565",
+    iconColor: "#C53030",
+    textColor: "#742A2A",
+    textForeground: "#742A2A",
+    textMutedForeground: "#9B2C2C",
+    productCartBackgroundColor: "#FFE9E9",
+  },
+  {
+    // Mint Fresh
+    backgroundColor: "#F0FFF4",
+    borderColor: "#38B2AC",
+    iconColor: "#2C7A7B",
+    textColor: "#234E52",
+    textForeground: "#234E52",
+    textMutedForeground: "#285E61",
+    productCartBackgroundColor: "#E6FFEA",
+  },
+  {
+    // Coffee Brown
+    backgroundColor: "#FFFBEB",
+    borderColor: "#B7791F",
+    iconColor: "#975A16",
+    textColor: "#633112",
+    textForeground: "#633112",
+    textMutedForeground: "#7B341E",
+    productCartBackgroundColor: "#FFF7E6",
+  },
+  {
+    // Slate Gray
+    backgroundColor: "#F8FAFC",
+    borderColor: "#64748B",
+    iconColor: "#475569",
+    textColor: "#1E293B",
+    textForeground: "#1E293B",
+    textMutedForeground: "#334155",
+    productCartBackgroundColor: "#F1F5F9",
   },
 ];
+
 interface ThemeSelectorProps {
   className?: string;
 }
@@ -97,7 +132,20 @@ export const MenuThemeSelector: FC<ThemeSelectorProps> = ({ className }) => {
               backgroundColor: theme.backgroundColor,
             }}
           >
-            <SelectValue />
+            <div className="flex gap-2">
+              {Object.entries(theme).map(([key, value]) => {
+                if (key.toLowerCase().includes("color")) {
+                  return (
+                    <div
+                      key={key}
+                      className="h-7 w-7 rounded-full border-2"
+                      style={{ backgroundColor: value as string }}
+                    />
+                  );
+                }
+                return null;
+              })}
+            </div>
           </SelectTrigger>
           <SelectContent>
             {colorThemes.map((theme, index) => (
